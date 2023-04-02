@@ -11,6 +11,11 @@ DB migration
 DB 더미 데이터 추가
 > php artisan db:seed
 
+서비스 실행
+> php artisan serve
+
+테스트
+> php artisan test
 
 ## Api
 
@@ -32,3 +37,5 @@ DB 더미 데이터 추가
 
 
 ## ERD
+<img width="812" alt="erd" src="https://user-images.githubusercontent.com/22957339/229338837-39d486e4-d30c-41b9-ad91-12a142f4b1cd.png">
+
