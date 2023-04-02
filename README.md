@@ -11,6 +11,9 @@ DB migration
 DB 더미 데이터 추가
 > php artisan db:seed
 
+서비스 실행
+> php artisan serve
+
 테스트
 > php artisan test
 
