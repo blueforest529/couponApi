@@ -11,6 +11,8 @@ DB migration
 DB 더미 데이터 추가
 > php artisan db:seed
 
+테스트
+> php artisan test
 
 ## Api
 
