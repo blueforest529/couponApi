@@ -32,4 +32,3 @@ DB 더미 데이터 추가
 
 
 ## ERD
-# couponApi
