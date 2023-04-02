@@ -20,7 +20,7 @@ class UserCouponControllerTest extends TestCase
             'coupon_id' => 1
         ];
 
-        $response = $this->json('POST', route('user_coupon.store'), $data)
+        $response = $this->json('POST', route('user_coupon.grantall'), $data)
             ->assertStatus(200)
             ->assertJson(['ok' => 'Success']);
     }

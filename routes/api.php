@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //유저별 쿠폰 생성
-Route::post('user_coupon', [UserCouponController::class, 'store'])->name('user_coupon.store');
+Route::post('user_coupon', [UserCouponController::class, 'grantAll'])->name('user_coupon.grantall');
 
 //쿠폰 다운로드
 Route::post('user_coupon/download', [UserCouponController::class, 'download'])->name('user_coupon.download');

@@ -11,13 +11,15 @@ use Illuminate\Support\Facades\DB;
 
 class UserCouponController extends Controller
 {
+    //code : 영문 대/소문자+ 숫자로 총 62개로 중복을 허용한 4자리 문자열을 만들면 경우의 수 62 * 62 * 62 * 62 = 14,776,336
+    const COUPON_REGEX = '([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})';
     private $faker;
     public function __construct(){
         $this->faker = Container::getInstance()->make(Generator::class);
     }
 
     //유저별 쿠폰 생성
-    function store(Request $request) {
+    function grantAll(Request $request) {
         try {
             if (!$request->coupon_id) {
                 return response()->json([
@@ -25,19 +27,38 @@ class UserCouponController extends Controller
                 ]);
             }
 
+            $data = [];
+            $emailList = [];
+            $smsList = [];
             $allUser = DB::table('users')
-                    ->select('id', 'email', 'phone')
+                    ->select('id', 'name', 'email', 'phone')
                     ->get();
 
-            //code : 영문 대/소문자+ 숫자로 총 62개로 중복을 허용한 4자리 문자열을 만들면 경우의 수 62 * 62 * 62 * 62 = 14,776,336
             foreach($allUser as $user) {
+                $now  = now()->toDateTimeString();
+                $code = $this->faker->regexify(self::COUPON_REGEX);
+
                 $data[] = [
                     'user_id' => $user->id,
                     'coupon_id' => $request->coupon_id,
-                    'code' => $this->faker->regexify('([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})'),
+                    'code' => $code,
                     'status' => 0,
-                    'created_at'=> now()->toDateTimeString(),
-                    'updated_at'=> now()->toDateTimeString()
+                    'created_at'=> $now,
+                    'updated_at'=> $now
+                ];
+
+                $emailList[] = [
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'coupon_id' => $request->coupon_id,
+                    'code' => $code,
+                ];
+
+                $smsList[] = [
+                    'user_name' => $user->name,
+                    'user_phone' => $user->phone,
+                    'coupon_id' => $request->coupon_id,
+                    'code' => $code
                 ];
             }
 
@@ -47,11 +68,8 @@ class UserCouponController extends Controller
                 UserCoupon::query()->insert($chunk);
             }
 
-            //send coupon
-            foreach($allUser as $user) {
-                // 여기서 발송하는 Api 호출
-
-            }
+            $this->sendEmail($emailList);
+            $this->sendSms($smsList);
 
             return response()->json([
                 'ok' => 'Success'
@@ -69,14 +87,16 @@ class UserCouponController extends Controller
     function download(Request $request)
     {
         try {
-            $data = array(
+            $now = now()->toDateTimeString();
+
+            $data = [
                 'user_id' => $request->user_id,
                 'coupon_id' => $request->coupon_id,
-                'code' => $this->faker->regexify('([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})-([a-zA-Z0-9]{4})'),
+                'code' => $this->faker->regexify(self::COUPON_REGEX),
                 'status' => 0,
-                'created_at'=> now()->toDateTimeString(),
-                'updated_at'=> now()->toDateTimeString()
-            );
+                'created_at'=> $now,
+                'updated_at'=> $now
+            ];
 
             UserCoupon::query()->insert($data);
 
@@ -91,4 +111,18 @@ class UserCouponController extends Controller
             ]);
         }
     }
+
+
+    private function sendEmail($userList) {
+        foreach ($userList as $user) {
+            // 여기서 메일 발송
+        }
+    }
+
+    private function sendSms($userList) {
+        foreach ($userList as $user) {
+            // 여기서 문자 발송
+        }
+    }
+
 }
