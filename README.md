@@ -32,3 +32,4 @@ DB 더미 데이터 추가
 
 
 ## ERD
+<img src="https://user-images.githubusercontent.com/22957339/229338759-1515832c-9441-4534-a5cc-21b99a8b3577.jpeg"/>
